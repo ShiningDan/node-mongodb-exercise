@@ -1,0 +1,21 @@
+{
+  "name": "node-mongodb",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "ShiningDan <zhuce.zyc@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/libs",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7"
+  }
+}
