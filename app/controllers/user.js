@@ -44,7 +44,7 @@ exports.signup = function(req, res) {
     let userid = req.body.user;
 
     let user = new User(userid);
-    User.find({name: user.name}, function(err, user) {
+    User.findOne({name: user.name}, function(err, user) {
         if (err) {
             console.log(err);
         }
@@ -78,4 +78,21 @@ exports.list = function(req, res) {
             users: users,
         })
     })
+}
+
+//middleware for user
+exports.signinRequired = function(req, res, next) {
+    let user = req.session.user;
+    if (!user) {
+        return res.redirect('/signin');
+    }
+    next();
+}
+
+exports.adminRequired = function(req, res, next) {
+    let user = req.session.user;
+    if(user.role <= 10) {
+        return res.redirect('/signin');
+    }
+    next();
 }

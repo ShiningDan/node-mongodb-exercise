@@ -1,4 +1,5 @@
 let Movie = require('../models/movie');
+let Comment = require('../models/comment');
 
 exports.detail = function(req, res) {   // 访问 /admin/3 返回 detail.jade 渲染后的效果
     let id = req.params.id;
@@ -6,10 +7,15 @@ exports.detail = function(req, res) {   // 访问 /admin/3 返回 detail.jade �
         if (err) {
             console.log(err);
         }
-        res.render('detail', {
-            title: movie.title,
-            movie: movie,
-        })
+        Comment.find({movie: id})
+        .populate('from', 'name')
+        .exec(function(err, comments) {
+            res.render('detail', {
+                title: movie.title,
+                movie: movie,
+                comments: comments
+            })
+        });
     })  
 }
 
