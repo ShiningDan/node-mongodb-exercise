@@ -5,6 +5,8 @@ exports.save = function(req, res) {
     let comment = new Comment(_comment);
     let movieId = _comment.movie;
 
+    
+
     comment.save(function(err, comment) {
         if (err) {
             console.log(err);

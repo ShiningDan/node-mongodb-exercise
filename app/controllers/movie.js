@@ -9,6 +9,7 @@ exports.detail = function(req, res) {   // 访问 /admin/3 返回 detail.jade �
         }
         Comment.find({movie: id})
         .populate('from', 'name')
+        .populate('reply.from reply.to', 'name')
         .exec(function(err, comments) {
             res.render('detail', {
                 title: movie.title,

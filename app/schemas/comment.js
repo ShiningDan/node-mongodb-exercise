@@ -15,6 +15,11 @@ let CommentSchema = new Schema({
         type: ObjectId,
         ref: 'User',
     },
+    reply: [{
+        from: {type: ObjectId, ref: 'User'},
+        to: {type: ObjectId, ref: 'User'},
+        content: String,
+    }],
     content: String,
     meta: {
         createAt: {
