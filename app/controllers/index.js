@@ -1,17 +1,18 @@
 
 let Movie = require('../models/movie');
+let Category = require('../models/category');
 
 exports.index = function(req, res) {
-    console.log("user in session");
-    console.log(req.session.user);
 
-    Movie.fetch(function(err, movies) {
+    Category.find({})
+    .populate({path: 'movies', options: {limit: 5}})
+    .exec(function(err, categories) {
         if (err) {
             console.log(err);
         }
         res.render('index', {
-            title: 'ShiningDan 主页',
-            movies: movies,
-        })
-    })
+            title: 'Shiningdan 首页',
+            categories: categories,
+        });
+    });
 }

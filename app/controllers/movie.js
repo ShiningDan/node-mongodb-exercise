@@ -1,5 +1,7 @@
 let Movie = require('../models/movie');
 let Comment = require('../models/comment');
+let Category = require('../models/category');
+let underScore = require('underscore');
 
 exports.detail = function(req, res) {   // 访问 /admin/3 返回 detail.jade 渲染后的效果
     let id = req.params.id;
@@ -24,35 +26,32 @@ exports.update = function(req, res) {
     let id = req.params.id;
     if (id) {
         Movie.findById(id, function(err, movie) {
-            res.render('admin', {
-                title: 'shiningdan 后台更新页面',
-                movie: movie,
+            Category.find({}, function(err, categories) {
+                res.render('admin', {
+                    title: 'shiningdan 后台更新页面',
+                    movie: movie,
+                    categories: categories,
+                })
             })
         })
     }
 }
 
-exports.save = function(req, res) {
-    res.render('admin', {
-        title: 'shiningdan 后台录入页',
-        movie: {
-            title: '',
-            doctor: '',
-            country: '',
-            language: '',
-            year: '',
-            flash: '',
-            poster: '',
-            summary: '',
-        }
-    })
+exports.new = function(req, res) {
+    Category.find({}, function(err, categories) {
+        res.render('admin', {
+            title: 'shiningdan 后台录入页',
+            movie: {},
+            categories: categories,
+        })
+    });
 }
 
-exports.new = function(req, res) {
+exports.save = function(req, res) {
     let movieObj = req.body.movie;
     let id = movieObj._id;
     let _movie;
-    if (id !== 'undefined') {
+    if (id) {
         Movie.findById(id, function(err, movie) {
             if (err) {
                 console.log(err);
@@ -66,23 +65,20 @@ exports.new = function(req, res) {
             })
         })
     } else {
-        _movie = Movie({
-            doctor: movieObj.doctor,
-            title: movieObj.title,
-            country: movieObj.country,
-            language: movieObj.language,
-            year: movieObj.year,
-            country: movieObj.country,
-            poster: movieObj.poster,
-            summary: movieObj.summary,
-            flash: movieObj.flash,
-        });
+        _movie = Movie(movieObj);
         // _id 在调用 Movie() 的时候会自动生成
+        let categoryId = _movie.category;
         _movie.save(function(err, movie) {
             if (err) {
                 console.log(err);
             }
-            res.redirect('/movie/' + movie._id);
+
+            Category.findById(categoryId, function(err, category) {
+                category.movies.push(_movie._id);
+                category.save(function(err, category) {
+                    res.redirect('/movie/' + movie._id);
+                })
+            })
         })
     }
 }
