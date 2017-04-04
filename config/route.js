@@ -14,6 +14,7 @@ module.exports = function(app) {
 
     //index
     app.get('/', Index.index);
+    app.get('/results', Index.search);
 
     //user
     app.post('/user/signin', User.signin);
@@ -38,4 +39,5 @@ module.exports = function(app) {
     app.get('/admin/category/new', User.signinRequired, User.adminRequired, Category.new);
     app.post('/admin/category/new', User.signinRequired, User.adminRequired, Category.save);
     app.get('/admin/category/list', User.signinRequired, User.adminRequired, Category.list);
+
 }

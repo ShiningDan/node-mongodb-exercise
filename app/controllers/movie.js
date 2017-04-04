@@ -67,19 +67,34 @@ exports.save = function(req, res) {
     } else {
         _movie = Movie(movieObj);
         // _id 在调用 Movie() 的时候会自动生成
-        let categoryId = _movie.category;
+        let categoryId = movieObj.category;
+        let categoryName = movieObj.categoryName;
+        console.log(movieObj);
         _movie.save(function(err, movie) {
             if (err) {
                 console.log(err);
             }
 
-            Category.findById(categoryId, function(err, category) {
-                category.movies.push(_movie._id);
-                category.save(function(err, category) {
-                    res.redirect('/movie/' + movie._id);
+            if (categoryId) {
+                Category.findById(categoryId, function(err, category) {
+                    category.movies.push(_movie._id);
+                    category.save(function(err, category) {
+                        res.redirect('/movie/' + movie._id);
+                    })
                 })
-            })
-        })
+            } else if(categoryName) {
+                let category = new Category({
+                    name: categoryName,
+                    movies: [movie._id],
+                });
+                category.save(function(err, category) {
+                    _movie.category = category._id;
+                    _movie.save(function(err, movie) {
+                        res.redirect('/movie/' + movie._id);
+                    })
+                })
+            }
+        });
     }
 }
 
